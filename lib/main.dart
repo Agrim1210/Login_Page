@@ -11,10 +11,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _controller = TextEditingController();
-  String name = "";
+  var _name;
+  var _password;
 
- 
+  final _nameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +35,7 @@ class _MyAppState extends State<MyApp> {
                   elevation: 10,
                   margin: EdgeInsets.all(25),
                   child: TextFormField(
-                    controller: _controller,
+                    controller: _nameController,
                     decoration: const InputDecoration(
                       icon: Icon(Icons.person),
                       hintText: 'Required',
@@ -45,6 +47,7 @@ class _MyAppState extends State<MyApp> {
                   elevation: 10,
                   margin: EdgeInsets.all(25),
                   child: TextFormField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                       icon: Icon(Icons.lock),
@@ -64,9 +67,12 @@ class _MyAppState extends State<MyApp> {
                   height: 50,
                   child: RaisedButton(
                     color: Colors.lightGreen,
-                    onPressed:(){setState(() {
-                     name= _controller.text;
-                    });},
+                    onPressed: () {
+                      setState(() {
+                        _name = _nameController.text;
+                        _password = _passwordController.text;
+                      });
+                    },
                     child: Text(
                       'Login',
                       style: TextStyle(
@@ -76,6 +82,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
+                Text('Your name is $_name and Your password is $_password')
               ],
             ),
           ),
