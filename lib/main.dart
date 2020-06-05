@@ -21,23 +21,18 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   var name;
   var password;
+  bool rememberMe=false;
 
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   bool rememberMeFlag = false;
-  // SharedPreferences prefs =
-  //                     await SharedPreferences.getInstance();
-  //   String MobileNo = prefs.getString('MobileNo');
-  //  String Password = prefs.getString('Password');
-  //  bool RememeberMe = prefs.getBool('RememeberMe');
+  
   @override
   void initState() {
     super.initState();
     getValue();
   }
-  // Future<String>saveData()async{
-
-  // }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +42,12 @@ class MyAppState extends State<MyApp> {
           if (snapshot.connectionState == ConnectionState.done &&
               name != null &&
               password != null) {
-            return HomeScreen();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ),
+            );
           } else {
             return Scaffold(
               resizeToAvoidBottomPadding: false,
@@ -112,6 +112,7 @@ class MyAppState extends State<MyApp> {
                           if (checkMandatoryFields()) {
                             if (rememberMeFlag) {
                               setValues();
+                              getValue();
                             }
                           }
                         },
@@ -193,20 +194,20 @@ class MyAppState extends State<MyApp> {
 
   void setValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('MobileNo', nameController.text.toString());
-    prefs.setString('Password', passwordController.text.toString());
-    prefs.setBool('RememberMe', rememberMeFlag);
+    prefs.setString('name', nameController.text.toString());
+    prefs.setString('password', passwordController.text.toString());
+    prefs.setBool('rememberMe', rememberMeFlag);
     print('values are set');
   }
 
   Future getValue() async {
     print('getting value ');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String MobileNo = prefs.getString('MobileNo');
-    String Password = prefs.getString('Password');
-    // bool RememeberMe = prefs.getBool('RememeberMe');
-    print('MobileNo: ${MobileNo}');
-    print('Password: ${Password}');
-    // print('RememberMe: ${RememberMe}');
+    String name = prefs.getString('name');
+    String password = prefs.getString('password');
+    bool rememberMe = prefs.getBool('rememeberMe');
+    print('name: ${name}');
+    print('password: ${password}');
+    print('rememberMe: ${rememberMe}');
   }
 }
