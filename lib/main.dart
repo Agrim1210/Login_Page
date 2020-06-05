@@ -1,163 +1,212 @@
+import 'package:Login_Page/TextWidgets.dart';
+import 'package:Login_Page/homesceen.dart';
+import 'package:Login_Page/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'signup_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './constants.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(
+      MaterialApp(
+        home: MyApp(),
+      ),
+    );
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  var _name;
-  var _password;
+class MyAppState extends State<MyApp> {
+  var name;
+  var password;
 
-  final _nameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _rememberMeFlag = false;
+  final nameController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool rememberMeFlag = false;
+  // SharedPreferences prefs =
+  //                     await SharedPreferences.getInstance();
+  //   String MobileNo = prefs.getString('MobileNo');
+  //  String Password = prefs.getString('Password');
+  //  bool RememeberMe = prefs.getBool('RememeberMe');
+  @override
+  void initState() {
+    super.initState();
+    getValue();
+  }
+  // Future<String>saveData()async{
+
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        body: Container(
-          margin: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Complaint Corner',
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[700],
-                ),
-              ),
-              Text(
-                'Powered by Vdoers',
-                style: TextStyle(
-                  color: Colors.blue[800],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-              SizedBox(
-                width: 350,
-                height: 70,
-              ),
-              TextFormField(
-                maxLength: 10,
-                keyboardType: TextInputType.number,
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.phone_android),
-                  hintText: 'Required',
-                  labelText: 'Mobile Number ',
-                  counterText: '0/10',
-                  border: const OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  isDense: true,
-                ),
-              ),
-              SizedBox(
-                width: 150,
-                height: 20,
-              ),
-              TextFormField(
-                maxLength: 30,
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  counterText: '0/30',
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: Icon(
-                    Icons.visibility_off,
-                  ),
-                  border: const OutlineInputBorder(),
-                  hintText: 'Required',
-                  labelText: 'Password ',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  isDense: true,
-                ),
-              ),
-              // SizedBox(
-              //   height: 20,
-              // ),
-              Row(
-                children: <Widget>[
-                  GestureDetector(
-                    child: Checkbox(
-                      value: _rememberMeFlag,
-                      onChanged: (value) {
-                        setState(() {
-                          _rememberMeFlag = !_rememberMeFlag;
-                        });
-                      },
+    return FutureBuilder(
+        future: getValue(),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              name != null &&
+              password != null) {
+            return HomeScreen();
+          } else {
+            return Scaffold(
+              resizeToAvoidBottomPadding: false,
+              body: Container(
+                margin: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    MainTitle(
+                      title: 'Complaint Corner',
                     ),
-                    onTap: () => setState(() {
-                      _rememberMeFlag = !_rememberMeFlag;
-                    }),
-                  ),
-                  Text(
-                    'Remember me',
-                    style: new TextStyle(color: Colors.black),
-                  ),
-                ],
-              ),
-              ButtonTheme(
-                minWidth: 310,
-                height: 50,
-                child: RaisedButton(
-                  color: Colors.blue[450],
-                  onPressed: () {
-                    setState(
-                      () {
-                        if (checkMandatoryFields()) {
-                          _name = _nameController.text;
-                          _password = _passwordController.text;
-                          //Call Login Api
-
-                          Fluttertoast.showToast(msg: 'Login Successful');
-                        }
-                      },
-                    );
-                  },
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                    BelowTitle(
+                      belowTitle: 'Powered by Vdoers',
                     ),
-                  ),
+                    SizedBox(
+                      width: 350,
+                      height: 70,
+                    ),
+                    TextFormField(
+                      maxLength: 10,
+                      keyboardType: TextInputType.number,
+                      controller: nameController,
+                      decoration: kTextFieldDecoration,
+                    ),
+                    SizedBox(
+                      width: 150,
+                      height: 20,
+                    ),
+                    TextFormField(
+                      maxLength: 30,
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: kPassTextFieldDecoration,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Checkbox(
+                            value: rememberMeFlag,
+                            onChanged: (value) {
+                              setState(() {
+                                rememberMeFlag = !rememberMeFlag;
+                              });
+                            },
+                          ),
+                          onTap: () => setState(() {
+                            rememberMeFlag = !rememberMeFlag;
+                          }),
+                        ),
+                        Text(
+                          'Remember me',
+                          style: new TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    ButtonTheme(
+                      minWidth: 310,
+                      height: 50,
+                      child: RaisedButton(
+                        color: Color(0xFF005CA5),
+                        onPressed: () async {
+                          if (checkMandatoryFields()) {
+                            if (rememberMeFlag) {
+                              setValues();
+                            }
+                          }
+                        },
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FlatButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Forgot password ?",
+                        style: new TextStyle(
+                          color: Colors.pinkAccent,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Does not have account ?',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUp(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.pinkAccent,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
                 ),
               ),
-              SizedBox(height: 10,),
-              Text(
-                "Forgot password ?",
-                style: new TextStyle(color: Colors.pink[200],fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          }
+        });
   }
 
   bool checkMandatoryFields() {
-    if (_nameController.text.isEmpty) {
+    if (nameController.text.isEmpty) {
       Fluttertoast.showToast(msg: 'UserName can not be empty');
       return false;
-    } else if (_passwordController.text.isEmpty) {
+    } else if (passwordController.text.isEmpty) {
       Fluttertoast.showToast(msg: 'Password can not be empty');
       return false;
     } else {
       return true;
     }
+  }
+
+  void setValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('MobileNo', nameController.text.toString());
+    prefs.setString('Password', passwordController.text.toString());
+    prefs.setBool('RememberMe', rememberMeFlag);
+    print('values are set');
+  }
+
+  Future getValue() async {
+    print('getting value ');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String MobileNo = prefs.getString('MobileNo');
+    String Password = prefs.getString('Password');
+    // bool RememeberMe = prefs.getBool('RememeberMe');
+    print('MobileNo: ${MobileNo}');
+    print('Password: ${Password}');
+    // print('RememberMe: ${RememberMe}');
   }
 }
