@@ -21,33 +21,31 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   var name;
   var password;
-  bool rememberMe=false;
+  bool rememberMe = false;
 
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   bool rememberMeFlag = false;
-  
+  Future<void> initializeData;
+
   @override
   void initState() {
     super.initState();
-    getValue();
+    // getValue();
+    initializeData = getValue();
   }
- 
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getValue(),
+        future: initializeData,
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
               name != null &&
               password != null) {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(),
-              ),
-            );
+                context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            // return Scaffold();
           } else {
             return Scaffold(
               resizeToAvoidBottomPadding: false,
@@ -89,13 +87,10 @@ class MyAppState extends State<MyApp> {
                             value: rememberMeFlag,
                             onChanged: (value) {
                               setState(() {
-                                rememberMeFlag = !rememberMeFlag;
+                                rememberMeFlag = value;
                               });
                             },
                           ),
-                          onTap: () => setState(() {
-                            rememberMeFlag = !rememberMeFlag;
-                          }),
                         ),
                         Text(
                           'Remember me',
@@ -112,7 +107,7 @@ class MyAppState extends State<MyApp> {
                           if (checkMandatoryFields()) {
                             if (rememberMeFlag) {
                               setValues();
-                              getValue();
+                              //getValue();
                             }
                           }
                         },
@@ -200,14 +195,14 @@ class MyAppState extends State<MyApp> {
     print('values are set');
   }
 
-  Future getValue() async {
+  Future<void> getValue() async {
     print('getting value ');
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String name = prefs.getString('name');
-    String password = prefs.getString('password');
-    bool rememberMe = prefs.getBool('rememeberMe');
-    print('name: ${name}');
-    print('password: ${password}');
-    print('rememberMe: ${rememberMe}');
+    name = prefs.getString('name');
+    password = prefs.getString('password');
+    rememberMe = prefs.getBool('rememeberMe');
+    print('name: $name');
+    print('password: $password');
+    print('rememberMe: $rememberMe');
   }
 }

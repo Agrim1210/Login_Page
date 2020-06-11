@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './main.dart';
+
 class BelowTitle extends StatelessWidget {
   BelowTitle({@required this.belowTitle});
   final String belowTitle;

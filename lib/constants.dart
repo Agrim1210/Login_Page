@@ -22,3 +22,4 @@ const kPassTextFieldDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
   isDense: true,
 );
+// const kPaddingBetweenCardContent=
